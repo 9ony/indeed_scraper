@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-    
+
 def pages_max_func(start=0):
     URL = f"https://kr.indeed.com/jobs?q=python&limit=50&radius=25&start={start*50}"
     indeed_results = requests.get(URL)
@@ -34,4 +34,19 @@ def pages_max_func(start=0):
         print("다음페이지가 없습니다")
         print("현재페이지는",link.b.get('aria-label'))
         return max_page
-print("마지막페이지는=",pages_max_func())
+
+def searching_jop():
+    last_page = pages_max_func()
+    page_list = []
+    URL = f"https://kr.indeed.com/jobs?q=python&limit=50&radius=25&start="
+    for s_num in range(last_page):
+        requests.get(f"{URL}{s_num*50}")
+        page_list.append(int(s_num))
+        print
+    print(page_list)
+    title=[]
+    work=[]
+    job=[]
+    requests.get()
+# div,"class=":"job_seen_beacon" 안에 h2,"class":"jobtitle" 과 div,"class":"job-snippet"(부서설명?)가져오기
+# print("마지막페이지는=",pages_max_func())
