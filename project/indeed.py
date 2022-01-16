@@ -1,4 +1,5 @@
-from turtle import delay
+import time
+import random
 import requests
 from bs4 import BeautifulSoup
 LIMIT=50
@@ -7,6 +8,7 @@ URL = f"https://kr.indeed.com/취업?q=Python&&l=서울&limit={LIMIT}&radius=100
 def pages_max_func(start=0):
     start_n=f"&start={start*LIMIT}"
     results = requests.get(URL+start_n)
+    time.sleep(random.uniform(2,4))
     soup = BeautifulSoup(results.text , 'html.parser')
     if soup.find("nav",{"role":"navigation"}):
         pagination = soup.find("ul",{"class": "pagination-list"})
@@ -50,6 +52,8 @@ def searching_job(last_page):
         print("현재페이지=",page[len(page)-1]+1)
         # job_results = requests.get(URL+f"&start={start*LIMIT+9999}")
         job_results = requests.get(URL+f"&start={start*LIMIT}")
+        time.sleep(random.uniform(5,8))
+        print(job_results.status_code)
         soup = BeautifulSoup(job_results.text,'html.parser')
         jobs = soup.find("div",{"id":"mosaic-provider-jobcards"})
         # job_seen_beacon = jobs.find_all("div",{"class":"job_seen_beacon"})
@@ -73,11 +77,11 @@ def searching_job(last_page):
             # locals()['titles_page{}'.format(page[len(page)-1]+1)].append(job_info.find('span','').get('title'))
             # locals()['titles_page{}'.format(page[len(page)-1]+1)].append(job_info.find("span",{"class":''}).get('title'))
             # locals()['snippets_page{}'.format(start_n+1)].append(job_info.find("div",{"class":"jot-snippet"}).string)
-            if job_info.find("span",{"class":"companyName"}).string==None:
-                locals()['company_page{}'.format(page[len(page)-1]+1)].append(job_info.find("span",{"class":"companyName"}).find('a').string)
-            else :    
+            if job_info.find("span",{"class":"companyName"}):
                 locals()['company_page{}'.format(page[len(page)-1]+1)].append(job_info.find("span",{"class":"companyName"}).string)
-        
+            else:
+                # locals()['company_page{}'.format(page[len(page)-1]+1)].append(job_info.find("a",{"data-tn-element":"companyName"}).string)
+                locals()['company_page{}'.format(page[len(page)-1]+1)].append("에러입니다")
         
         # print(locals()['titles_page{}'.format(page[len(page)-1]+1)])
         # print(len(locals()['titles_page{}'.format(page[len(page)-1]+1)]))
