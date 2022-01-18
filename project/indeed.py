@@ -44,6 +44,7 @@ def pages_max_func(start=0):
         return 1
 def searching_job(last_page):
     page =[]
+    parser_html=[]
     # lists=[]
     # lists2=[]
     for start in range(last_page):
@@ -52,10 +53,11 @@ def searching_job(last_page):
         print("현재페이지=",page[len(page)-1]+1)
         # job_results = requests.get(URL+f"&start={start*LIMIT+9999}")
         job_results = requests.get(URL+f"&start={start*LIMIT}")
-        time.sleep(random.uniform(5,8))
+        time.sleep(random.uniform(7,10))
         print(job_results.status_code)
         soup = BeautifulSoup(job_results.text,'html.parser')
         jobs = soup.find("div",{"id":"mosaic-provider-jobcards"})
+        parser_html.append(jobs)
         # job_seen_beacon = jobs.find_all("div",{"class":"job_seen_beacon"})
         mobtk = jobs.a.get('data-mobtk') 
         #mobtk의 attribute를 읽어와서 soup 파라미터에 넣어줌
@@ -64,10 +66,11 @@ def searching_job(last_page):
         locals()['titles_page{}'.format(page[len(page)-1]+1)] = []
         # locals()['snippets_page{}'.format(page[len(page)-1]+1)] = []
         locals()['company_page{}'.format(page[len(page)-1]+1)] = []
+        locals()['error_checkpage{}'.format(page[len(page)-1]+1)] = []
         #페이지별 title,snippet {LIMIT}개를 담을 동적변수 선언
         #지역변수면 locals() , 전역변수면 globals() [변수명{(.format의숫자가 들어옴).format(x)}]
-        
-        for job_info in job_infos:
+        index = []
+        for i,job_info in enumerate(job_infos):
             # newjob = job_info.find("h2",{"class":"jobTitle jobTitle-newJob"})
             # newjob2 = job_info.h2.get('class')
             # if newjob2 == ['jobTitle', 'jobTitle-color-purple', 'jobTitle-newJob']:
@@ -75,23 +78,41 @@ def searching_job(last_page):
             # else :
             #     lists2.append(newjob2)
             # locals()['titles_page{}'.format(page[len(page)-1]+1)].append(job_info.find('span','').get('title'))
-            # locals()['titles_page{}'.format(page[len(page)-1]+1)].append(job_info.find("span",{"class":''}).get('title'))
+            # locals()['error_checkpage{}'.format(page[len(page)-1]+1)].append(job_info.contents)
             # locals()['snippets_page{}'.format(start_n+1)].append(job_info.find("div",{"class":"jot-snippet"}).string)
-            if job_info.find("span",{"class":"companyName"}):
+            index.append(i)
+            if job_info.find("span",{"class":"companyName"}) is not None:
                 locals()['company_page{}'.format(page[len(page)-1]+1)].append(job_info.find("span",{"class":"companyName"}).string)
             else:
                 # locals()['company_page{}'.format(page[len(page)-1]+1)].append(job_info.find("a",{"data-tn-element":"companyName"}).string)
-                locals()['company_page{}'.format(page[len(page)-1]+1)].append("에러입니다")
+                # job_infos.__getattribute__(job_info.find("span",{"class":"companyName"}).string)
+                locals()['company_page{}'.format(page[len(page)-1]+1)].append("!!파싱오류!!")
+                pass
+            locals()['titles_page{}'.format(page[len(page)-1]+1)].append(job_info.find("span",{"class":''}).get('title'))
+
+        if "!!파싱오류!!" in locals()['company_page{}'.format(page[len(page)-1]+1)]:
+            print("파싱오류났음")
+            locals()['company_page{}'.format(page[len(page)-1]+1)]=[]
+            for errcompany in parser_html[start].find_all("a",{"data-mobtk":f"{mobtk}"}):
+                if errcompany.find("span",{"class":"companyName"}):
+                    locals()['company_page{}'.format(page[len(page)-1]+1)].append(errcompany.find("span",{"class":"companyName"}).string)
         
-        # print(locals()['titles_page{}'.format(page[len(page)-1]+1)])
-        # print(len(locals()['titles_page{}'.format(page[len(page)-1]+1)]))
+        print("타이틀")
+        print(locals()['titles_page{}'.format(page[len(page)-1]+1)])
+        print(len(locals()['titles_page{}'.format(page[len(page)-1]+1)]))
         # print(locals()['snippets_page{}'.format(page[len(page)-1]+1)])
         # print(len(locals()['snippets_page{}'.format(page[len(page)-1]+1)]))
+        print("회사명")
         print(locals()['company_page{}'.format(page[len(page)-1]+1)])
         print(len(locals()['company_page{}'.format(page[len(page)-1]+1)]))
-        # print(lists)
-        # print(len(lists))
-        # print(lists2)
-        # print(len(lists2))
-
+        # print("파싱데이터")
+        # print(locals()['error_checkpage{}'.format(page[len(page)-1]+1)])
+        # print(len(locals()['error_checkpage{}'.format(page[len(page)-1]+1)]))
+            # print(lists)
+            # print(len(lists))
+            # print(lists2)
+            # print(len(lists2))
+    print(index)
+    num = int(input("페이지를 입력하세요"))
+    print(parser_html[num-1].find_all("a",{"data-mobtk":""}))
 # div,"class=":"job_seen_beacon" 안에 h2,"class":"jobtitle" 과 div,"class":"job-snippet"(부서설명?)가져오기
