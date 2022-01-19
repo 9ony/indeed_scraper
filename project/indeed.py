@@ -1,9 +1,10 @@
+from ast import Del
 import time
 import random
 import requests
 from bs4 import BeautifulSoup
 LIMIT=50
-URL = f"https://kr.indeed.com/취업?q=Python&&l=서울&limit={LIMIT}&radius=100&sort=date"
+URL = f"https://kr.indeed.com/취업?q=python&&l=서울&limit={LIMIT}&radius=100&sort=date"
 # URL = "https://kr.indeed.com/%EC%B7%A8%EC%97%85?q=Python&l=%EC%84%9C%EC%9A%B8&limit=50&radius=25&start=9999&vjk=50483549cea811b8"
 def pages_max_func(start=0):
     start_n=f"&start={start*LIMIT}"
@@ -45,8 +46,7 @@ def pages_max_func(start=0):
 def searching_job(last_page):
     page =[]
     parser_html=[]
-    # lists=[]
-    # lists2=[]
+    result = []
     for start in range(last_page):
         page.append(start)
         # print(page)
@@ -69,7 +69,7 @@ def searching_job(last_page):
         locals()['error_checkpage{}'.format(page[len(page)-1]+1)] = []
         #페이지별 title,snippet {LIMIT}개를 담을 동적변수 선언
         #지역변수면 locals() , 전역변수면 globals() [변수명{(.format의숫자가 들어옴).format(x)}]
-        index = []
+        # index = []
         for i,job_info in enumerate(job_infos):
             # newjob = job_info.find("h2",{"class":"jobTitle jobTitle-newJob"})
             # newjob2 = job_info.h2.get('class')
@@ -80,22 +80,25 @@ def searching_job(last_page):
             # locals()['titles_page{}'.format(page[len(page)-1]+1)].append(job_info.find('span','').get('title'))
             # locals()['error_checkpage{}'.format(page[len(page)-1]+1)].append(job_info.contents)
             # locals()['snippets_page{}'.format(start_n+1)].append(job_info.find("div",{"class":"jot-snippet"}).string)
-            index.append(i)
             if job_info.find("span",{"class":"companyName"}) is not None:
                 locals()['company_page{}'.format(page[len(page)-1]+1)].append(job_info.find("span",{"class":"companyName"}).string)
             else:
                 # locals()['company_page{}'.format(page[len(page)-1]+1)].append(job_info.find("a",{"data-tn-element":"companyName"}).string)
                 # job_infos.__getattribute__(job_info.find("span",{"class":"companyName"}).string)
                 locals()['company_page{}'.format(page[len(page)-1]+1)].append("!!파싱오류!!")
-                pass
+                # index.append(i)
             locals()['titles_page{}'.format(page[len(page)-1]+1)].append(job_info.find("span",{"class":''}).get('title'))
-
-        if "!!파싱오류!!" in locals()['company_page{}'.format(page[len(page)-1]+1)]:
-            print("파싱오류났음")
-            locals()['company_page{}'.format(page[len(page)-1]+1)]=[]
-            for errcompany in parser_html[start].find_all("a",{"data-mobtk":f"{mobtk}"}):
-                if errcompany.find("span",{"class":"companyName"}):
-                    locals()['company_page{}'.format(page[len(page)-1]+1)].append(errcompany.find("span",{"class":"companyName"}).string)
+        # if "!!파싱오류!!" in locals()['company_page{}'.format(page[len(page)-1]+1)]:
+        #     print("파싱오류났음")
+        #     if len(index)>0:
+        #         errcompany = parser_html[start].find_all("a",{"data-mobtk":f"{mobtk}"})
+        #         for x in range(len(index)):
+        #             # for errcompany in parser_html[start].find_all("a",{"data-mobtk":f"{mobtk}"}):
+        #             if errcompany[index[x]].find("span",{"class":"companyName"}) is not None:
+        #                 locals()['company_page{}'.format(page[len(page)-1]+1)][index[x]]=errcompany[index[x]].find("span",{"class":"companyName"}).string
+        #             else :
+        #                 locals()['company_page{}'.format(page[len(page)-1]+1)][index[x]]="회사명없음"
+            result.append(f"회사명 = {locals()['company_page{}'.format(page[len(page)-1]+1)][i]}  타이틀 = {locals()['titles_page{}'.format(page[len(page)-1]+1)][i]}")
         
         print("타이틀")
         print(locals()['titles_page{}'.format(page[len(page)-1]+1)])
@@ -112,7 +115,9 @@ def searching_job(last_page):
             # print(len(lists))
             # print(lists2)
             # print(len(lists2))
-    print(index)
-    num = int(input("페이지를 입력하세요"))
-    print(parser_html[num-1].find_all("a",{"data-mobtk":""}))
+        # print(locals()['company_page1'][49])
+    # print(index)
+    # num = int(input("페이지를 입력하세요"))
+    # print(parser_html[num-1].find_all("a",{"data-mobtk":""}))
+    return result
 # div,"class=":"job_seen_beacon" 안에 h2,"class":"jobtitle" 과 div,"class":"job-snippet"(부서설명?)가져오기
