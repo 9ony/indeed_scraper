@@ -1,6 +1,8 @@
 from indeed import pages_max_func
-from indeed import searching_job
+from indeed import indeed_jobs
+from indeed import job_result
 max_page = pages_max_func()
-search = searching_job(max_page)
-print(search[0:50])
+search = indeed_jobs(max_page)
+print(search)
 print(len(search))
+job_result(search)
