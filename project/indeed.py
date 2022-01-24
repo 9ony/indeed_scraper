@@ -47,8 +47,9 @@ def indeed_jobs(last_page):
         # print("Mob-tk="+mobtk) #mob-tk가 맞는지 확인한 임시코드
         job_infos = jobs.find_all("a",{"data-mobtk":f"{mobtk}"})
         locals()['titles_page{}'.format(page[len(page)-1]+1)] = []
-        # locals()['snippets_page{}'.format(page[len(page)-1]+1)] = []
+        locals()['location_page{}'.format(page[len(page)-1]+1)] = []
         locals()['company_page{}'.format(page[len(page)-1]+1)] = []
+        locals()['link_page{}'.format(page[len(page)-1]+1)] = []
         index = [] #몇번째에서 회사명이 에러났는지 확인하기위한 배열
         
         for i,job_info in enumerate(job_infos):
@@ -58,7 +59,8 @@ def indeed_jobs(last_page):
                 locals()['company_page{}'.format(page[len(page)-1]+1)].append("회사명없음")
                 index.append(i) #파싱오류가난 현재 순서를 인덱스에 저장함
             locals()['titles_page{}'.format(page[len(page)-1]+1)].append(job_info.find("span",{"class":''}).get('title'))
-        
+            locals()['location_page{}'.format(page[len(page)-1]+1)].append(job_info.find("div",{"class":"companyLocation"}).string)
+            locals()['link_page{}'.format(page[len(page)-1]+1)].append("https://kr.indeed.com"+job_info.get('href'))
             if len(index)>0:
                 # errcompany = parser_html[start].find_all("a",{"data-mobtk":f"{mobtk}"})
                 for x in range(len(index)):
@@ -68,23 +70,27 @@ def indeed_jobs(last_page):
                     else :
                         locals()['company_page{}'.format(page[len(page)-1]+1)][index[x]]="회사명없음"
 
-            result.append(f"회사명 = {locals()['company_page{}'.format(page[len(page)-1]+1)][i]}  타이틀 = {locals()['titles_page{}'.format(page[len(page)-1]+1)][i]}")
-        
+            result.append(f"'회사명' : '{locals()['company_page{}'.format(page[len(page)-1]+1)][i]}', '타이틀' : '{locals()['titles_page{}'.format(page[len(page)-1]+1)][i]}', '위치' : {locals()['location_page{}'.format(page[len(page)-1]+1)][i]}, '링크' : '{locals()['link_page{}'.format(page[len(page)-1]+1)][i]}'")        
         print("타이틀")
         print(locals()['titles_page{}'.format(page[len(page)-1]+1)])
         print(len(locals()['titles_page{}'.format(page[len(page)-1]+1)]))
-        # print(locals()['snippets_page{}'.format(page[len(page)-1]+1)])
-        # print(len(locals()['snippets_page{}'.format(page[len(page)-1]+1)]))
         print("회사명")
         print(locals()['company_page{}'.format(page[len(page)-1]+1)])
         print(len(locals()['company_page{}'.format(page[len(page)-1]+1)]))
+        print("위치")
+        print(locals()['location_page{}'.format(page[len(page)-1]+1)])
+        print(len(locals()['location_page{}'.format(page[len(page)-1]+1)]))
+        print("링크")
+        print(locals()['link_page{}'.format(page[len(page)-1]+1)])
+        print(len(locals()['link_page{}'.format(page[len(page)-1]+1)]))
     # print(index)
-    num = int(input("페이지를 입력하세요"))
-    if num>0:
-        print(job_infos[num-1].find_all("a",{"data-mobtk":""}))
-    else :
-        pass
+    # num = int(input("페이지를 입력하세요"))
+    # if num>0:
+    #     print(job_infos[num-1].find_all("a",{"data-mobtk":""}))
+    # else :
+    #     pass
     return result
 def job_result(results):
     for result in results:
         print(result)
+    print(results.value())
