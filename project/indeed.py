@@ -4,9 +4,16 @@ import requests
 from save import save_file
 from bs4 import BeautifulSoup
 LIMIT = 50
-site = 'https://kr.indeed.com'
-URL = f"{site}/취업?q=python&&l=서울&limit={LIMIT}&radius=100&sort=date"
 
+def query_input():
+    i = input("검색어를 입력하세요")
+    return str(i)
+
+query = query_input()
+site = 'https://kr.indeed.com'
+URL = f"{site}/취업?q={query}&&l=서울&limit={LIMIT}&radius=100&sort=date"
+print(URL)
+save_file(0,query)
 def pages_max_func(start=0):
     start_n=f"&start={start*LIMIT}"
     results = requests.get(URL+start_n)
@@ -45,12 +52,15 @@ def indeed_jobs(last_page):
         print(job_results.status_code)
         soup = BeautifulSoup(job_results.text,'html.parser')
         jobs = soup.find("div",{"id":"mosaic-provider-jobcards"})
+        if jobs is None :
+            save_file(None,query)
+            break
         mobtk = jobs.a.get('data-mobtk')  #mobtk의 attribute를 읽어와서 soup 파라미터에 넣어줌
         # print("Mob-tk="+mobtk) #mob-tk가 맞는지 확인한 임시코드
         job_infos = jobs.find_all("a",{"data-mobtk":f"{mobtk}"})
         for job_info in job_infos:
             # print(test(job_info).values)
-            save_file(test(job_info))
+            save_file(test(job_info,query))
         
 def test(data):
     companytitle = data.find("span",{"class":''}).get('title')
