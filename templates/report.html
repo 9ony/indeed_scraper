@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Job Result</title>
+</head>
+<body>
+	<h1>Job Result</h1>
+	<h3>검색한 직무는 {{search}} 이고 개수는 {{resultslen}}</h3>
+	<section>
+		<table border="1">
+		<th>
+			<h3>회사</h3>
+		</th>
+		<th>
+			<h3>타이틀</h3>
+		</th>
+		<th>
+			<h3>위치</h3>
+		</th>
+		<th>
+			<h3>링크</h3>
+		</th>
+		{% for jobs in results %}
+		<tr>
+			<td>{{jobs.회사명}}</td>
+			<td>{{jobs.타이틀}}</td>
+			<td>{{jobs.위치}}</td>
+			<td><a href="{{jobs.링크}}" target="_blank">사이트로 이동</a></td>
+		</tr>
+		{% endfor %}
+		</table>
+	</section>
+</body>
+</html>

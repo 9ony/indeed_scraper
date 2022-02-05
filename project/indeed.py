@@ -21,21 +21,23 @@ def pages_max_func(start , URL):
                 pages.append(int(link.b.get('aria-label')))
             elif link.find("span").string:
                 pages.append(int(link.find("a").get('aria-label')))
-
+        print(start_n)
+        print(pages)
         max_page=pages[len(pages)-1]
         next_button = pagination.find("a",{"aria-label":"다음"})
 
         if next_button:
+            print(max_page)
             return pages_max_func(max_page , URL)
         else:
+            print(max_page)
             return max_page
-
     else : 
         return 1 #html내에 페이지를 매기는 섹션이 없을때 1을 반환
 
 def indeed_jobs(last_page, URL , query):
     page =[] #페이지를 확인하기 위한 배열 변수
-    # result = {}
+    result = []
     for start in range(last_page):
         page.append(start)
         print("Scrapping page",page[len(page)-1]+1)
@@ -57,6 +59,8 @@ def indeed_jobs(last_page, URL , query):
         for job_info in job_infos:
             # print(test(job_info).values)
             save_file(indeed_results(job_info),query)
+            result.append(indeed_results(job_info))
+    return result
         
 def indeed_results(data):
     companytitle = data.find("span",{"class":''}).get('title')
