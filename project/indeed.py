@@ -21,16 +21,16 @@ def pages_max_func(start , URL):
                 pages.append(int(link.b.get('aria-label')))
             elif link.find("span").string:
                 pages.append(int(link.find("a").get('aria-label')))
-        print(start_n)
-        print(pages)
+        # print(start_n)
+        # print(pages)
         max_page=pages[len(pages)-1]
         next_button = pagination.find("a",{"aria-label":"다음"})
 
         if next_button:
-            print(max_page)
+            # print(max_page)
             return pages_max_func(max_page , URL)
         else:
-            print(max_page)
+            # print(max_page)
             return max_page
     else : 
         return 1 #html내에 페이지를 매기는 섹션이 없을때 1을 반환
@@ -52,7 +52,7 @@ def indeed_jobs(last_page, URL , query):
         jobs = soup.find("div",{"id":"mosaic-provider-jobcards"})
         if jobs is None :
             save_file(None,query)
-            break
+            return "null"
         mobtk = jobs.a.get('data-mobtk')  #mobtk의 attribute를 읽어와서 soup 파라미터에 넣어줌
         # print("Mob-tk="+mobtk) #mob-tk가 맞는지 확인한 임시코드
         job_infos = jobs.find_all("a",{"data-mobtk":f"{mobtk}"})

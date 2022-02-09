@@ -22,7 +22,7 @@ def report():
         save_file(0,word)
         max_page = pages_max_func(0,URL)
         jobs = indeed_jobs(max_page , URL , word)
-        
+        print(type(jobs))
     else:
         return redirect('/')
     return render_template("report.html" ,
