@@ -13,7 +13,7 @@
 	<a href="/">홈으로</a>
 	{% else %}
 	<h3>검색한 직무는 {{search}}이고 총 검색결과는 {{resultslen}}개 입니다.</h3>
-	<a href="">Download CSV</a>
+	<a href="/download?word={{search}}">Download CSV</a>
 	<section>
 		<table border="1">
 		<th>

@@ -57,7 +57,7 @@ def indeed_jobs(last_page, URL , query):
         # print("Mob-tk="+mobtk) #mob-tk가 맞는지 확인한 임시코드
         job_infos = jobs.find_all("a",{"data-mobtk":f"{mobtk}"})
         for job_info in job_infos:
-            # print(test(job_info).values)
+            # print(indeed_results(job_info))
             save_file(indeed_results(job_info),query)
             result.append(indeed_results(job_info))
     return result
