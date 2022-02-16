@@ -20,13 +20,13 @@ def save_file(jobs,query):
             csvfile.close()
         print("검색결과가 없습니다.")
     elif jobs == 0:
-        with open('joblist.csv','w',newline='', encoding='utf-8-sig') as csvfile:
+        with open(f'{query}_joblist.csv','w',newline='', encoding='utf-8-sig') as csvfile:
             w = csv.DictWriter(csvfile, fieldnames=['회사명','타이틀','위치','링크',f'검색어 = {query}'])
             w.writeheader()
             csvfile.close()
         print("csv 초기화")
     else:
-        with open('joblist.csv','a',newline='', encoding='utf-8-sig') as csvfile:
+        with open(f'{query}_joblist.csv','a',newline='', encoding='utf-8-sig') as csvfile:
             w = csv.DictWriter(csvfile, fieldnames=['회사명','타이틀','위치','링크'])
             w.writerow(jobs)
             csvfile.close()

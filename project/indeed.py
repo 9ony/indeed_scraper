@@ -36,6 +36,7 @@ def pages_max_func(start , URL):
         return 1 #html내에 페이지를 매기는 섹션이 없을때 1을 반환
 
 def indeed_jobs(last_page, URL , query):
+    save_file(0,query)
     page =[] #페이지를 확인하기 위한 배열 변수
     result = []
     for start in range(last_page):
